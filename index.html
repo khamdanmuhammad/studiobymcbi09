@@ -96,6 +96,15 @@ td:first-child{font-weight:700;color:var(--a);white-space:nowrap}
 .logo{width:116px;height:116px;border-radius:50%;display:block;margin:0 auto 16px;object-fit:cover;box-shadow:0 14px 30px -8px rgba(15,23,42,.55),0 0 0 4px #fff}
 .by{color:var(--mu);font-size:.95rem;margin-bottom:8px}.by b{color:var(--a)}
 .ft{text-align:center;color:var(--mu);font-size:.82rem;padding:0 16px 32px}.ft b{color:var(--a)}
+[hidden]{display:none!important}
+.drop{border:2px dashed #CBD5E1;border-radius:14px;padding:16px;text-align:center;cursor:pointer;background:#F8FAFC;transition:all .2s ease;color:var(--mu);font-size:.8rem}
+.drop:hover,.drop:focus,.drop.dg{border-color:var(--a);background:var(--soft);outline:none}
+.drop .di{font-size:1.8rem}.drop b{display:block;color:var(--tx);font-size:.9rem;margin:2px 0}
+#pv{display:flex;gap:14px;align-items:center;text-align:left}
+#pv img{width:84px;height:84px;object-fit:cover;border-radius:12px;border:1px solid var(--bd);flex:none}
+.pi{display:flex;flex-direction:column;gap:4px;align-items:flex-start;min-width:0}
+.pi button{min-height:36px;font-size:.8rem;padding:4px 12px}
+.tip{background:#FEF9C3;border:1px solid #FDE68A;color:#713F12;border-radius:12px;padding:10px 14px;font-size:.84rem;margin-bottom:14px}
 </style>
 </head>
 <body>
@@ -107,6 +116,12 @@ td:first-child{font-weight:700;color:var(--a);white-space:nowrap}
   <input id="url" type="url" placeholder="https://winme.id/ebook-resep-mpasi-bayi">
   <label for="nm">Nama / Judul Produk Digital (opsional)</label>
   <input id="nm" type="text" placeholder="Contoh: Ebook Resep MPASI Bayi">
+  <label>Foto Produk <span style="font-weight:400;color:#64748B">(disarankan)</span></label>
+  <input type="file" id="file" accept="image/*" hidden>
+  <div class="drop" id="drop" tabindex="0" role="button" aria-label="Unggah foto produk">
+    <div id="dph"><div class="di">📷</div><b>Klik atau seret foto produk ke sini</b><span>JPG/PNG/WebP · membuat hasil lebih akurat &amp; realistis</span></div>
+    <div id="pv" hidden><img id="pimg" alt="Foto produk"><div class="pi"><b id="pinfo"></b><span id="pcol"></span><button type="button" id="prm">Hapus foto</button></div></div>
+  </div>
   <label for="cat">Kategori Produk</label>
   <select id="cat">
     <option value="ebook">Ebook / Panduan</option><option value="worksheet">Worksheet / Edukasi Anak</option>
@@ -187,8 +202,9 @@ function local(f){
   var aud=f.aud||"calon pembeli online",audEn=f.aud||"an online shopper";
   var orient=f.ar==="9:16"?"vertical 9:16 framing for mobile":"horizontal 16:9 widescreen framing";
   var link=f.url||"https://winme.id";
+  var REF=PH?" REFERENCE IMAGE: use the uploaded product photo as the exact reference (Flow: Ingredients to Video / Frames to Video). Keep the product's shape, proportions, colors ("+PH.colors.join(", ")+") and any visible branding identical to the photo ("+PH.orient+" composition"+(PH.bg?", "+PH.bg:"")+"); do not invent features, buttons, or text that are not in the photo. Match the scene palette and lighting to the product colors for a natural, realistic look.":"";
   var tail="Aspect ratio: "+f.ar+" ("+orient+"). Camera: "; 
-  function P(scene,body){return scene+"\n"+body+"\nCamera: "+S.cam+". Lighting: "+S.lit+". Mood: "+S.mood+". Aspect ratio: "+f.ar+" ("+orient+"). Duration: 8 seconds. Style: "+S.d+". No watermark, no distorted text."}
+  function P(scene,body){return scene+"\n"+body+"\nCamera: "+S.cam+". Lighting: "+S.lit+". Mood: "+S.mood+". Aspect ratio: "+f.ar+" ("+orient+"). Duration: 8 seconds. Style: "+S.d+"."+REF+" No watermark, no distorted text, no extra logos."}
   var flow=[
     P("SCENE 1 - HOOK VISUAL","Opening shot of a person representing the audience ("+audEn+") visibly "+C.prob+", close-up on their face and a messy desk, then a sudden spark of curiosity as a phone lights up with the product \""+name+"\"."),
     P("SCENE 2 - PRODUCT SHOWCASE / DEMO","Hero shot of "+C.obj+". Product name \""+name+"\" is the focus. The person is "+C.act+", with quick cutaways highlighting key benefits and satisfying details."),
@@ -197,7 +213,7 @@ function local(f){
   var story=[
     {t:"0-3 dtk (Hook)",v:"Close-up "+aud+" tampak frustrasi, lalu layar HP menyala menampilkan "+name,o:"Masih "+C.pI.split(" dan ")[0]+"?",vo:"Hei, kamu yang "+C.pI+"? Stop dulu, lihat ini!"},
     {t:"3-10 dtk (Masalah)",v:"Montase singkat kesulitan sehari-hari "+aud+": waktu terbuang, hasil tidak maksimal",o:"Capek coba sana-sini?",vo:"Banyak yang mengalami hal sama. Sudah coba berbagai cara, tapi hasilnya tetap begitu-begitu saja."},
-    {t:"10-22 dtk (Solusi & Demo)",v:"Tampilkan "+name+" di layar, demo fitur utama dan hasil nyata ("+C.n+")",o:name+" - solusi praktis di Winme",vo:"Kenalkan "+name+" dari Winme. "+C.ben[0]+", "+C.ben[1].toLowerCase()+", dan "+C.ben[2].toLowerCase()+". Cocok banget untuk "+aud+"."},
+    {t:"10-22 dtk (Solusi & Demo)",v:"Tampilkan "+name+" di layar, demo fitur utama dan hasil nyata ("+C.n+")"+(PH?". Gunakan foto produk asli sebagai visual utama agar tampilan konsisten":""),o:name+" - solusi praktis di Winme",vo:"Kenalkan "+name+" dari Winme. "+C.ben[0]+", "+C.ben[1].toLowerCase()+", dan "+C.ben[2].toLowerCase()+". Cocok banget untuk "+aud+"."},
     {t:"22-30 dtk (CTA)",v:"Hasil akhir yang membahagiakan, lalu tombol dan link produk muncul",o:"Klik link di bio. Dapatkan sekarang!",vo:"Jangan tunda lagi. Klik link di bio dan dapatkan "+name+" di Winme sekarang juga!"}
   ];
   var desc="HEADLINE:\n"+name+" - Solusi Praktis untuk "+aud+"\n\nMANFAAT UTAMA:\n"+C.ben.map(function(b){return "✅ "+b}).join("\n")+"\n\nCOCOK UNTUK:\n"+aud+" yang "+C.pI+".\n\nKENAPA PILIH INI?\nSebagai "+C.n+" di Winme, produk ini dirancang agar langsung bisa dipakai tanpa ribet. Akses instan, aman, dan bisa dipakai berulang.\n\nAJAKAN BELI:\nAmbil sekarang selagi tersedia! Pembelian aman lewat Winme dan dukungan siap membantu jika ada kendala.\n👉 "+link;
@@ -210,9 +226,11 @@ function ai(f,key){
   var words=slugWords(f.url).join(" ");
   var prompt="Anda adalah copywriter & sutradara iklan video. Buat aset iklan untuk produk digital Winme.\nLink: "+f.url+"\nKata kunci slug: "+words+"\nNama: "+(f.nm||"-")+"\nKategori: "+f.cat+"\nTarget: "+(f.aud||"umum")+"\nGaya visual: "+f.sty+"\nRasio: "+f.ar+
   "\nKembalikan HANYA JSON valid tanpa markdown dengan struktur: {\"flow\":[3 string prompt Google Flow/Veo bahasa Inggris: Scene 1 Hook, Scene 2 Showcase, Scene 3 CTA; tiap prompt memuat kamera, pencahayaan, mood, rasio],\"story\":[4 objek {\"t\":\"waktu\",\"v\":\"visual\",\"o\":\"teks overlay\",\"vo\":\"naskah voiceover\"} untuk 0-3 hook, 3-10 masalah, 10-22 solusi, 22-30 CTA, bahasa Indonesia],\"desc\":\"deskripsi jualan Winme bahasa Indonesia: headline, manfaat, cocok untuk, ajakan beli\",\"cap\":\"caption TikTok/IG/FB bahasa Indonesia lengkap hashtag\"}";
+  var parts=[{text:prompt+(PH?"\nFOTO PRODUK TERLAMPIR: analisis foto ini dan deskripsikan produk APA ADANYA (bentuk, warna, bahan, elemen visual). Semua prompt Flow wajib menyebut bahwa produk harus identik dengan gambar referensi; jangan mengarang fitur, teks, atau logo yang tidak terlihat. Selaraskan warna dan pencahayaan adegan dengan produk agar realistis dan natural.":"")}];
+  if(PH)parts.push({inline_data:{mime_type:"image/jpeg",data:PH.b64}});
   return fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="+encodeURIComponent(key),{
     method:"POST",headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{responseMimeType:"application/json"}})
+    body:JSON.stringify({contents:[{parts:parts}],generationConfig:{responseMimeType:"application/json"}})
   }).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}).then(function(d){
     var t=d.candidates[0].content.parts.map(function(p){return p.text||""}).join("").replace(/```json|```/g,"").trim();
     var o=JSON.parse(t);
@@ -220,6 +238,59 @@ function ai(f,key){
     return o;
   });
 }
+var PH=null;
+function cname(r,g,b){r/=255;g/=255;b/=255;var mx=Math.max(r,g,b),mn=Math.min(r,g,b),l=(mx+mn)/2,d=mx-mn,s=d===0?0:d/(1-Math.abs(2*l-1)),h=0;
+if(d){if(mx===r)h=((g-b)/d+6)%6;else if(mx===g)h=(b-r)/d+2;else h=(r-g)/d+4;h*=60}
+if(l>.9)return"white";if(l<.14)return"black";if(s<.15)return l>.65?"light gray":l<.35?"charcoal":"gray";
+var n=h<15||h>=345?"red":h<40?"orange":h<65?"yellow":h<165?"green":h<200?"teal":h<255?"blue":h<290?"purple":"pink";
+return(l<.3?"dark ":l>.75?"light ":"")+n}
+function analyze(img){
+  var out={colors:["neutral"],bg:""};
+  try{
+    var c=document.createElement("canvas");c.width=c.height=40;
+    var x=c.getContext("2d");x.drawImage(img,0,0,40,40);
+    var d=x.getImageData(0,0,40,40).data,cnt={},n=0;
+    for(var i=0;i<d.length;i+=4){var k=cname(d[i],d[i+1],d[i+2]);cnt[k]=(cnt[k]||0)+1;n++}
+    if((cnt.white||0)/n>.45)out.bg="plain white background";else if((cnt.black||0)/n>.45)out.bg="dark background";
+    var ks=Object.keys(cnt).filter(function(k){return k!=="white"&&k!=="black"}).sort(function(a,b){return cnt[b]-cnt[a]}).filter(function(k){return cnt[k]/n>.04}).slice(0,3);
+    if(ks.length)out.colors=ks;
+  }catch(e){}
+  return out;
+}
+function handleFile(file){
+  if(!file||!/^image\//.test(file.type)){toast("File harus berupa gambar");return}
+  var rd=new FileReader();
+  rd.onerror=function(){toast("Gagal membaca foto")};
+  rd.onload=function(){
+    var im=new Image();
+    im.onerror=function(){toast("Foto tidak bisa dibuka")};
+    im.onload=function(){
+      var sc=Math.min(1,768/Math.max(im.width,im.height)),w=Math.max(1,Math.round(im.width*sc)),h=Math.max(1,Math.round(im.height*sc));
+      var c=document.createElement("canvas");c.width=w;c.height=h;
+      var x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,w,h);x.drawImage(im,0,0,w,h);
+      var data=c.toDataURL("image/jpeg",.85),a=analyze(im);
+      PH={data:data,b64:data.split(",")[1],orient:w>h*1.15?"landscape":(h>w*1.15?"portrait":"square"),colors:a.colors,bg:a.bg};
+      $("pimg").src=data;
+      $("pinfo").textContent="Foto siap dipakai ("+({landscape:"lanskap",portrait:"potret",square:"persegi"})[PH.orient]+")";
+      $("pcol").textContent="Warna dominan: "+PH.colors.join(", ");
+      $("dph").hidden=true;$("pv").hidden=false;
+      toast("Foto produk ditambahkan");
+    };
+    im.src=rd.result;
+  };
+  rd.readAsDataURL(file);
+}
+function clearPH(){PH=null;$("file").value="";$("pimg").removeAttribute("src");$("pv").hidden=true;$("dph").hidden=false}
+(function(){
+  var dz=$("drop"),fi=$("file");
+  dz.addEventListener("click",function(){fi.click()});
+  dz.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();fi.click()}});
+  fi.addEventListener("change",function(){handleFile(fi.files[0])});
+  dz.addEventListener("dragover",function(e){e.preventDefault();dz.classList.add("dg")});
+  dz.addEventListener("dragleave",function(){dz.classList.remove("dg")});
+  dz.addEventListener("drop",function(e){e.preventDefault();dz.classList.remove("dg");handleFile(e.dataTransfer.files[0])});
+  $("prm").addEventListener("click",function(e){e.stopPropagation();clearPH()});
+})();
 var SK='<div class="sk"><div></div><div></div><div></div><div></div></div>';var copies=[];
 function cp(i){
   var t=copies[i]||"";
@@ -234,6 +305,7 @@ function render(R,note){
   copies=[];
   var h='<div class="tabs"><button class="tab on" data-t="0">🎬 Prompt Flow</button><button class="tab" data-t="1">📝 Script &amp; VO</button><button class="tab" data-t="2">🛍️ Jualan &amp; Caption</button></div>';
   if(note)h+='<div class="hint" style="margin:-8px 0 12px">'+esc(note)+'</div>';
+  if(PH)h+='<div class="tip">📷 <b>Tips Google Flow:</b> unggah foto produk yang sama sebagai gambar referensi (Ingredients to Video), lalu tempel prompt di bawah agar bentuk produk tidak berubah.</div>';
   h+='<div class="pn on" data-p="0">'+R.flow.map(function(p,i){return '<div class="blk"><div class="bh"><b><em class="bd">'+(i+1)+'</em>'+["Hook Visual","Showcase / Demo Produk","Call to Action / Hasil Akhir"][i]+'</b>'+cb(p)+'</div><div class="txt">'+esc(p)+'</div></div>'}).join("")+'</div>';
   var all=R.story.map(function(s){return s.t+"\nVisual: "+s.v+"\nOverlay: "+s.o+"\nVoiceover: "+s.vo}).join("\n\n");
   h+='<div class="pn" data-p="1"><div class="bh" style="margin-bottom:10px"><b>Script 30 Detik (Hook - Problem - Solution - CTA)</b>'+cb(all)+'</div><div class="tw"><table class="st"><tr class="th"><th>Waktu</th><th>Visual di Layar</th><th>Teks Overlay</th><th>Naskah Voiceover</th></tr>'+R.story.map(function(s){return '<tr><td data-l="Waktu">'+esc(s.t)+'</td><td data-l="Visual di Layar">'+esc(s.v)+'</td><td data-l="Teks Overlay">'+esc(s.o)+'</td><td data-l="Naskah Voiceover">'+esc(s.vo)+'</td></tr>'}).join("")+'</table></div></div>';
@@ -289,7 +361,7 @@ $("go").addEventListener("click",function(){
 });
 $("demo").addEventListener("click",function(){fill(SAMPLE);toast("Contoh data terisi")});
 $("rst").addEventListener("click",function(){
-  fill({url:"",nm:"",cat:"ebook",aud:"",sty:"pixar",ar:"9:16"});
+  fill({url:"",nm:"",cat:"ebook",aud:"",sty:"pixar",ar:"9:16"});clearPH();
   $("out").innerHTML='<div class="empty"><div class="ic">🎬</div><h3>Belum ada hasil</h3><p>Isi form di sebelah, atau klik <b>Isi Contoh Data</b>,<br>lalu tekan <b>Generate Aset Iklan Sekarang</b>.</p></div>';
 });
 loadH();drawH();
